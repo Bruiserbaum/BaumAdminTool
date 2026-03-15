@@ -29,7 +29,7 @@ internal static class SystemInfoService
     public static async Task<SystemSnapshot> GetSnapshotAsync()
     {
         var cpuTask  = GetCpuInfoAsync();
-        var gpuTask  = RunWmicAsync("path win32_VideoController get Name /format:value");
+        var gpuTask  = GetGpuNameAsync();
         var diskTask = Task.Run(GetDisks);
         var netTask  = Task.Run(GetNetworks);
         var blTask   = GetBitLockerStatusAsync();
@@ -37,7 +37,7 @@ internal static class SystemInfoService
         await Task.WhenAll(cpuTask, gpuTask, diskTask, netTask, blTask);
 
         var (cpuName, cpuCores, cpuLogical, cpuPct) = cpuTask.Result;
-        var gpuName  = ParseWmicValue(gpuTask.Result, "Name");
+        var gpuName  = gpuTask.Result;
         var blStatus = blTask.Result;
 
         var disks = diskTask.Result.Select(d =>
@@ -68,6 +68,22 @@ internal static class SystemInfoService
 
     // ── Private helpers ────────────────────────────────────────────────────────
 
+    static async Task<string> GetGpuNameAsync()
+    {
+        // wmic is deprecated on Win11 — use CimInstance via PowerShell
+        var output = await RunCommandAsync("powershell.exe",
+            "-NoProfile -Command \"Get-CimInstance -ClassName Win32_VideoController" +
+            " | Where-Object { $_.Name -notlike '*Basic*' -and $_.Name -notlike '*Microsoft*' }" +
+            " | Select-Object -First 1 -ExpandProperty Name\"");
+        var name = output.Trim();
+        if (!string.IsNullOrEmpty(name)) return name;
+
+        // Fallback: return first adapter including basic ones
+        var fallback = await RunCommandAsync("powershell.exe",
+            "-NoProfile -Command \"(Get-CimInstance -ClassName Win32_VideoController | Select-Object -First 1).Name\"");
+        return fallback.Trim().Length > 0 ? fallback.Trim() : "N/A";
+    }
+
     static async Task<(string name, int cores, int logical, double pct)> GetCpuInfoAsync()
     {
         string cpuName = "Unknown";
@@ -79,9 +95,11 @@ internal static class SystemInfoService
         }
         catch { }
 
-        var wmicOut = await RunWmicAsync("cpu get NumberOfCores,LoadPercentage /format:value");
-        int.TryParse(ParseWmicValue(wmicOut, "NumberOfCores"), out int cores);
-        double.TryParse(ParseWmicValue(wmicOut, "LoadPercentage"), out double pct);
+        var cimOut = await RunCommandAsync("powershell.exe",
+            "-NoProfile -Command \"$c=Get-CimInstance Win32_Processor | Select-Object -First 1;" +
+            " Write-Output \\\"Cores=$($c.NumberOfCores)\\\"; Write-Output \\\"Load=$($c.LoadPercentage)\\\"\"");
+        int.TryParse(ParseWmicValue(cimOut, "Cores"), out int cores);
+        double.TryParse(ParseWmicValue(cimOut, "Load"), out double pct);
         if (cores == 0) cores = Environment.ProcessorCount;
 
         return (cpuName, cores, Environment.ProcessorCount, pct);

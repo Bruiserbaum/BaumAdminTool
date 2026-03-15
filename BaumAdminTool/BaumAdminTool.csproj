@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <AssemblyName>BaumAdminTool</AssemblyName>
     <RootNamespace>BaumAdminTool</RootNamespace>
     <ApplicationIcon>Resources\app.ico</ApplicationIcon>
