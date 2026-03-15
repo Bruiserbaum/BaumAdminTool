@@ -4,6 +4,8 @@ A portable dark-theme Windows administrative utility for system administrators. 
 
 Built as part of the [BAUM GitHub architecture](https://github.com/Bruiserbaum) alongside BaumLaunch, BaumDash, and BaumSecure.
 
+![BaumAdminTool Screenshot](docs/screenshot.png)
+
 ---
 
 ## Features
