@@ -15,6 +15,7 @@ internal sealed class MainForm : Form
     private readonly ProcessTab   _processTab;
     private readonly ToolboxTab   _toolboxTab;
     private readonly BackupTab    _backupTab;
+    private readonly SettingsTab  _settingsTab;
     private readonly Panel[]      _tabs;
     private readonly Button[]     _tabBtns;
     private int _activeTab = 0;
@@ -51,7 +52,8 @@ internal sealed class MainForm : Form
         _processTab  = new ProcessTab();
         _toolboxTab  = new ToolboxTab(_output);
         _backupTab   = new BackupTab(_output);
-        _tabs        = new Panel[] { _overviewTab, _processTab, _toolboxTab, _backupTab };
+        _settingsTab = new SettingsTab();
+        _tabs        = new Panel[] { _overviewTab, _processTab, _toolboxTab, _backupTab, _settingsTab };
 
         foreach (var tab in _tabs)
         {
@@ -68,7 +70,7 @@ internal sealed class MainForm : Form
             BackColor = AppTheme.BgPanel,
         };
 
-        string[] tabNames = { "  Overview  ", "  Processes  ", "  Toolbox  ", "  Backup  " };
+        string[] tabNames = { "  Overview  ", "  Processes  ", "  Toolbox  ", "  Backup  ", "  Settings  " };
         _tabBtns = new Button[tabNames.Length];
         int bx = 8;
         for (int i = 0; i < tabNames.Length; i++)
