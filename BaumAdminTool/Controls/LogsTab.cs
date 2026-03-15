@@ -8,6 +8,7 @@ internal sealed class LogsTab : Panel
     private readonly RichTextBox  _detail;
     private readonly ComboBox     _levelFilter;
     private readonly ComboBox     _logFilter;
+    private readonly TextBox      _eventIdFilter;
     private readonly Label        _countLabel;
     private List<LogRow>          _all = new();
 
@@ -46,11 +47,25 @@ internal sealed class LogsTab : Panel
         _logFilter.SelectedIndex = 0;
         _logFilter.SelectedIndexChanged += (_, _) => ApplyFilter();
 
+        var idLbl = AppTheme.MakeLabel("Event ID:", AppTheme.FontSmall, AppTheme.TextMuted);
+        idLbl.Location = new Point(506, 13);
+
+        _eventIdFilter = new TextBox
+        {
+            BackColor       = AppTheme.BgCard,
+            ForeColor       = AppTheme.TextPrimary,
+            Font            = AppTheme.FontBody,
+            BorderStyle     = BorderStyle.FixedSingle,
+            PlaceholderText = "e.g. 41, 6008",
+        };
+        _eventIdFilter.SetBounds(578, 9, 140, 24);
+        _eventIdFilter.TextChanged += (_, _) => ApplyFilter();
+
         _countLabel = AppTheme.MakeLabel("", AppTheme.FontSmall, AppTheme.TextMuted);
-        _countLabel.Location = new Point(506, 13);
+        _countLabel.Location = new Point(728, 13);
 
         toolbar.Controls.AddRange(new Control[]
-            { refreshBtn, levelLbl, _levelFilter, logLbl, _logFilter, _countLabel });
+            { refreshBtn, levelLbl, _levelFilter, logLbl, _logFilter, idLbl, _eventIdFilter, _countLabel });
 
         // Split: grid on top, detail panel below
         var split = new SplitContainer
@@ -230,6 +245,16 @@ internal sealed class LogsTab : Panel
         var level = _levelFilter.SelectedIndex;
         var log   = _logFilter.SelectedItem as string ?? "All";
 
+        // Parse comma-separated Event ID list, e.g. "41, 6008"
+        var idText = _eventIdFilter.Text.Trim();
+        var idSet  = new HashSet<int>();
+        if (!string.IsNullOrEmpty(idText))
+        {
+            foreach (var part in idText.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                if (int.TryParse(part.Trim(), out int id))
+                    idSet.Add(id);
+        }
+
         var filtered = _all.Where(r =>
         {
             bool levelOk = level switch
@@ -241,7 +266,8 @@ internal sealed class LogsTab : Panel
                 _ => true,
             };
             bool logOk = log == "All" || r.Log == log;
-            return levelOk && logOk;
+            bool idOk  = idSet.Count == 0 || idSet.Contains(r.EventId);
+            return levelOk && logOk && idOk;
         }).ToList();
 
         _grid.SuspendLayout();
