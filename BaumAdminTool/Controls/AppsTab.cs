@@ -72,7 +72,8 @@ internal sealed class AppsTab : Panel
         Controls.Add(_grid);
         Controls.Add(toolbar);
 
-        Task.Run(() => LoadAsync(refreshBtn));
+        // Trigger on handle creation so Invoke is safe and the Task is properly awaited
+        HandleCreated += async (_, _) => await LoadAsync(refreshBtn);
     }
 
     void StyleGrid()
@@ -111,18 +112,16 @@ internal sealed class AppsTab : Panel
 
     async Task LoadAsync(Button btn)
     {
-        if (btn.InvokeRequired) { await Task.Run(() => Invoke(() => LoadAsync(btn))); return; }
-        btn.Enabled = false;
+        btn.Enabled      = false;
         _countLabel.Text = "Loading...";
 
         _all = await Task.Run(ReadRegistry);
 
         if (!IsDisposed)
-            Invoke(() =>
-            {
-                ApplyFilter();
-                btn.Enabled = true;
-            });
+        {
+            ApplyFilter();
+            btn.Enabled = true;
+        }
     }
 
     static List<AppRow> ReadRegistry()

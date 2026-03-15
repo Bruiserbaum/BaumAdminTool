@@ -36,6 +36,7 @@ internal sealed class MainForm : Form
         FormBorderStyle = FormBorderStyle.None;
         BackColor       = AppTheme.BgDeep;
         StartPosition   = FormStartPosition.CenterScreen;
+        Icon            = GenerateIcon();
 
         // ── Live output (bottom, add first for Fill to work) ──────────────
         _output = new LiveOutputPanel
@@ -202,5 +203,59 @@ internal sealed class MainForm : Form
             if (nearBottom && nearRight) { m.Result = (IntPtr)HTBOTTOMRIGHT; return; }
         }
         base.WndProc(ref m);
+    }
+
+    // Drawn icon — avoids PNG-in-ICO incompatibility with System.Drawing.Icon
+    static Icon GenerateIcon()
+    {
+        using var bmp = new Bitmap(32, 32, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        using (var g = Graphics.FromImage(bmp))
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.Clear(Color.Transparent);
+
+            const float s = 32f;
+
+            // Rounded-rect background
+            using var bgBrush = new SolidBrush(Color.FromArgb(255, 18, 18, 26));
+            using var bgPath  = new System.Drawing.Drawing2D.GraphicsPath();
+            const int rr = 6;
+            bgPath.AddArc(0, 0, rr * 2, rr * 2, 180, 90);
+            bgPath.AddArc(32 - rr * 2, 0, rr * 2, rr * 2, 270, 90);
+            bgPath.AddArc(32 - rr * 2, 32 - rr * 2, rr * 2, rr * 2, 0, 90);
+            bgPath.AddArc(0, 32 - rr * 2, rr * 2, rr * 2, 90, 90);
+            bgPath.CloseFigure();
+            g.FillPath(bgBrush, bgPath);
+
+            // Terminal window body
+            using var termBrush   = new SolidBrush(Color.FromArgb(255, 22, 22, 38));
+            using var accentBrush = new SolidBrush(AppTheme.Accent);
+            using var accentPen   = new Pen(AppTheme.Accent, 1.2f);
+            g.FillRectangle(termBrush, 4f, 5f, 23f, 18f);
+            g.DrawRectangle(accentPen, 4f, 5f, 23f, 18f);
+
+            // Title bar strip
+            g.FillRectangle(accentBrush, 4f, 5f, 23f, 4f);
+
+            // ">" prompt in green
+            using var promptBrush = new SolidBrush(AppTheme.Success);
+            using var font        = new Font("Consolas", 7f, FontStyle.Bold);
+            g.DrawString(">", font, promptBrush, 5f, 11f);
+
+            // Underscore cursor in white
+            using var cursorBrush = new SolidBrush(AppTheme.TextPrimary);
+            g.FillRectangle(cursorBrush, 13f, 19f, 6f, 1.5f);
+
+            // Wrench badge (bottom-right)
+            using var wrenchBrush = new SolidBrush(AppTheme.Warning);
+            using var wrenchPen   = new Pen(AppTheme.Warning, 2f);
+            wrenchPen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+            wrenchPen.EndCap   = System.Drawing.Drawing2D.LineCap.Round;
+            g.FillEllipse(wrenchBrush, 20f, 20f, 5f, 5f);
+            using var holeBrush = new SolidBrush(Color.FromArgb(255, 18, 18, 26));
+            g.FillEllipse(holeBrush, 21.5f, 21.5f, 2f, 2f);
+            g.DrawLine(wrenchPen, 24f, 24f, 27f, 27f);
+        }
+        return Icon.FromHandle(bmp.GetHicon());
     }
 }
