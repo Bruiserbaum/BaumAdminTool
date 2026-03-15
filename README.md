@@ -50,6 +50,14 @@ Windows Event Log viewer for System and Application logs (last 30 days).
 - Filter by **Event ID**: type one or more IDs comma-separated (e.g. `41, 6008`)
 - Click any row to see the full event message in the detail pane
 
+### Devices
+Full list of installed PnP devices and their driver information via `Win32_PnPSignedDriver` CIM.
+- Columns: Device Name, Class, Driver Version, Driver Date, Manufacturer, Signed
+- Unsigned drivers highlighted in orange
+- Filter by **device class** (dropdown auto-populated: Display, Net, USB, etc.)
+- Search by device name or manufacturer
+- Loads on demand — click **Load Devices** (enumeration takes a few seconds)
+
 ### Settings
 - **Check for Updates** — fetches latest release from GitHub, downloads installer, runs silently, and relaunches the app
 - **Version** — displays the currently installed version
