@@ -17,6 +17,7 @@ internal sealed class MainForm : Form
     private readonly BackupTab    _backupTab;
     private readonly AppsTab      _appsTab;
     private readonly LogsTab      _logsTab;
+    private readonly DevicesTab   _devicesTab;
     private readonly SettingsTab  _settingsTab;
     private readonly Panel[]      _tabs;
     private readonly Button[]     _tabBtns;
@@ -56,9 +57,10 @@ internal sealed class MainForm : Form
         _backupTab   = new BackupTab(_output);
         _appsTab     = new AppsTab();
         _logsTab     = new LogsTab();
+        _devicesTab  = new DevicesTab();
         _settingsTab = new SettingsTab();
         _tabs = new Panel[]
-            { _overviewTab, _processTab, _toolboxTab, _backupTab, _appsTab, _logsTab, _settingsTab };
+            { _overviewTab, _processTab, _toolboxTab, _backupTab, _appsTab, _logsTab, _devicesTab, _settingsTab };
 
         foreach (var tab in _tabs)
         {
@@ -76,7 +78,7 @@ internal sealed class MainForm : Form
         };
 
         string[] tabNames =
-            { "  Overview  ", "  Processes  ", "  Toolbox  ", "  Backup  ", "  Apps  ", "  Logs  ", "  Settings  " };
+            { "  Overview  ", "  Processes  ", "  Toolbox  ", "  Backup  ", "  Apps  ", "  Logs  ", "  Devices  ", "  Settings  " };
         _tabBtns = new Button[tabNames.Length];
         int bx = 8;
         for (int i = 0; i < tabNames.Length; i++)
