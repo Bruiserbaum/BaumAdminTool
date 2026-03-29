@@ -1,6 +1,6 @@
-﻿# BaumAdminTool
+# BaumAdminTool
 
-A portable dark-theme Windows administrative utility for system administrators. Provides a fast, centralized way to inspect, troubleshoot, and maintain a Windows system â€” no installation required to run.
+A portable dark-theme Windows administrative utility for system administrators. Provides a fast, centralized way to inspect, troubleshoot, and maintain a Windows system — no installation required to run.
 
 Built as part of the [BAUM GitHub architecture](https://github.com/Bruiserbaum) alongside BaumLaunch, BaumDash, and BaumSecure.
 
@@ -12,11 +12,11 @@ Built as part of the [BAUM GitHub architecture](https://github.com/Bruiserbaum) 
 
 ### Overview
 Displays a live snapshot of the system at a glance:
-- **Machine** â€” hostname, logged-in user, OS version, build number, uptime
-- **CPU & Memory** â€” processor name, core count, current CPU load %, RAM used/total with usage bar
-- **Disk** â€” per-drive capacity, free space, usage bar, and BitLocker encryption status
-- **Network** â€” adapter name, IP address, subnet, gateway, DNS servers, MAC address
-- **GPU** â€” discrete GPU name via CIM (filters out Microsoft Basic Display Adapter)
+- **Machine** — hostname, logged-in user, OS version, build number, uptime
+- **CPU & Memory** — processor name, core count, current CPU load %, RAM used/total with usage bar
+- **Disk** — per-drive capacity, free space, usage bar, and BitLocker encryption status
+- **Network** — adapter name, IP address, subnet, gateway, DNS servers, MAC address
+- **GPU** — discrete GPU name via CIM (filters out Microsoft Basic Display Adapter)
 
 ### Processes
 Live process monitor showing the top 40 processes sorted by CPU % then memory.
@@ -37,7 +37,7 @@ One-click admin actions organized by category. All output streams live to the **
 ### Backup
 RoboCopy-based backup of standard user folders to any destination.
 - Checkboxes for Desktop, Documents, Downloads, Pictures, Music, Videos
-- Optional **Mirror mode** (`/MIR`) â€” deletes destination files not in source
+- Optional **Mirror mode** (`/MIR`) — deletes destination files not in source
 - Per-folder progress streamed to Live Output
 
 ### Apps
@@ -58,27 +58,27 @@ Full list of installed PnP devices and their driver information via `Win32_PnPSi
 - Unsigned drivers highlighted in orange
 - Filter by **device class** (dropdown auto-populated: Display, Net, USB, etc.)
 - Search by device name or manufacturer
-- Loads on demand â€” click **Load Devices** (enumeration takes a few seconds)
+- Loads on demand — click **Load Devices** (enumeration takes a few seconds)
 
 ### Settings
-- **Check for Updates** â€” fetches latest release from GitHub, downloads installer, runs silently, and relaunches the app
-- **Version** â€” displays the currently installed version
+- **Check for Updates** — fetches latest release from GitHub, downloads installer, runs silently, and relaunches the app
+- **Version** — displays the currently installed version
 
 ---
 
 ## Requirements
 - Windows 10 22H2 or later (Windows 11 recommended)
 - x64 system
-- No .NET runtime required â€” self-contained executable
+- No .NET runtime required — self-contained executable
 
 ## No External Dependencies
 Built entirely on .NET 8 built-in APIs:
-- `System.Net.NetworkInformation` â€” network adapter info
-- `System.Diagnostics.Eventing.Reader` â€” event log queries
-- `System.Diagnostics.Process` â€” process monitoring and admin action execution
-- `Microsoft.Win32.Registry` â€” installed apps
-- `kernel32.dll GlobalMemoryStatusEx` P/Invoke â€” RAM stats
-- `uxtheme.dll SetWindowTheme` P/Invoke â€” dark scrollbars
+- `System.Net.NetworkInformation` — network adapter info
+- `System.Diagnostics.Eventing.Reader` — event log queries
+- `System.Diagnostics.Process` — process monitoring and admin action execution
+- `Microsoft.Win32.Registry` — installed apps
+- `kernel32.dll GlobalMemoryStatusEx` P/Invoke — RAM stats
+- `uxtheme.dll SetWindowTheme` P/Invoke — dark scrollbars
 
 ## Build
 ```
