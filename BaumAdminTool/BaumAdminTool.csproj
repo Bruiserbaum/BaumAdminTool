@@ -10,6 +10,8 @@
     <AssemblyName>BaumAdminTool</AssemblyName>
     <RootNamespace>BaumAdminTool</RootNamespace>
     <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+    <AssemblyTitle>BaumAdminTool</AssemblyTitle>
+    <Product>BaumAdminTool</Product>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\app.ico" />

@@ -36,7 +36,7 @@ internal sealed class MainForm : Form
         FormBorderStyle = FormBorderStyle.None;
         BackColor       = AppTheme.BgDeep;
         StartPosition   = FormStartPosition.CenterScreen;
-        Icon            = GenerateIcon();
+        Icon            = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
         // ── Live output (bottom, add first for Fill to work) ──────────────
         _output = new LiveOutputPanel
